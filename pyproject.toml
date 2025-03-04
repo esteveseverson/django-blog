@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "django>=5.1.6",
+]
 
 [dependency-groups]
 dev = [
@@ -13,13 +15,13 @@ dev = [
 ]
 
 [tool.ruff]
-line-length = 79
+line-length = 91
 extend-exclude = ['migrations']
 
 [tool.ruff.lint]
 preview = true
 select = ['I', 'F', 'E', 'W', 'PL', 'PT']
-ignore = ['PLR']
+ignore = ['PLR', 'PLC']
 
 [tool.ruff.format]
 preview = true
