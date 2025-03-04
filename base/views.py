@@ -1,10 +1,46 @@
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
 from base.templates.base.forms import RoomForm
 
 from .models import Room, Topic
+
+
+def login_page(request: HttpRequest):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(username=username)
+
+        except Exception:
+            messages.error(request, 'User does not exist')
+            return render(request, 'base/login_register.html', {})
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+
+        if user is None:
+            messages.error(request, 'Username or password does not exists')
+
+    context = {}
+
+    return render(request, 'base/login_register.html', context)
+
+
+def logout_user(request):
+    logout(request)
+
+    return redirect('home')
 
 
 # Create your views here.
@@ -28,6 +64,7 @@ def room(request: HttpRequest, pk: str):
     return render(request, 'base/room.html', context)
 
 
+@login_required(login_url='/login')
 def create_room(request: HttpRequest):
     form = RoomForm()
 
@@ -42,9 +79,13 @@ def create_room(request: HttpRequest):
     return render(request, 'base/room_form.html', context)
 
 
+@login_required(login_url='/login')
 def update_room(request: HttpRequest, pk: str):
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
+
+    if request.user != room.host:
+        return HttpResponse('Only the host can update the room')
 
     if request.method == 'POST':
         form = RoomForm(request.POST, instance=room)
