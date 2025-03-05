@@ -9,16 +9,15 @@ from django.shortcuts import redirect, render
 
 from base.templates.base.forms import RoomForm
 
-from .models import Room, Topic
+from .models import Message, Room, Topic
 
 
 def login_page(request: HttpRequest):
-    
     page = 'login'
 
     if request.user.is_authenticated:
         return redirect('home')
-    
+
     if request.method == 'POST':
         username = request.POST.get('username').lower()
         password = request.POST.get('password')
@@ -51,12 +50,11 @@ def logout_user(request: HttpRequest):
 
 
 def register_user(request: HttpRequest):
-
     form = UserCreationForm()
 
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
-        
+
         if form.is_valid():
             user: User = form.save(commit=False)
             user.username = user.username.lower()
@@ -88,7 +86,13 @@ def home(request: HttpRequest):
 
 def room(request: HttpRequest, pk: str):
     room = Room.objects.get(id=pk)
-    context = {'room': room}
+    room_messages = room.message_set.all().order_by('-created_at')
+
+    if request.method == 'POST':
+        Message.objects.create(user=request.user, room=room, body=request.POST.get('body'))
+        return redirect('room', pk=room.id)
+
+    context = {'room': room, 'room_messages': room_messages}
 
     return render(request, 'base/room.html', context)
 
