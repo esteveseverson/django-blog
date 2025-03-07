@@ -75,18 +75,24 @@ def home(request: HttpRequest):
     q = request.GET.get('q') if request.GET.get('q') is not None else ''
 
     rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q))
-    topics = Topic.objects.all()
-
     rooms_count = rooms.count()
 
-    context = {'rooms': rooms, 'topics': topics, 'rooms_count': rooms_count}
+    topics = Topic.objects.all()
+    topic_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
+
+    context = {
+        'rooms': rooms,
+        'topics': topics,
+        'rooms_count': rooms_count,
+        'topic_messages': topic_messages,
+    }
 
     return render(request, 'base/home.html', context)
 
 
 def room(request: HttpRequest, pk: str):
     room = Room.objects.get(id=pk)
-    room_messages = room.message_set.all().order_by('-created_at')
+    room_messages = room.message_set.all()
     participants = room.participants.all()
 
     if request.method == 'POST':
