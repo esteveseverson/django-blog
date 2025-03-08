@@ -7,6 +7,8 @@ urlpatterns = [
     path('login/', views.login_page, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('register/', views.register_user, name='register'),
+    # user profile
+    path('profile/<str:pk>/', views.user_profile, name='user-profile'),
     # home
     path('', views.home, name='home'),
     # crud room

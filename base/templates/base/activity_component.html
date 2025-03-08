@@ -3,8 +3,8 @@
 
 {% for message in topic_messages %}
     <div>
-        <small>@{{ message.user }} {{ message.created_at|timesince }} </small>
-        <small> replied to {{ message.room }} </small>
+        <small> <a href="{% url 'user-profile' message.user.id %}"> @{{ message.user }} </a> {{ message.created_at|timesince }} ago, </small>
+        <small> replied to <a href="{% url 'room' message.room.id %}"> {{ message.room }} </a> </small>
         <p> {{ message }} </p>
         <hr>
     </div>
