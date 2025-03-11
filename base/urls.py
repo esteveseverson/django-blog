@@ -9,6 +9,7 @@ urlpatterns = [
     path('register/', views.register_user, name='register'),
     # user profile
     path('profile/<str:pk>/', views.user_profile, name='user-profile'),
+    path('update-profile/', views.update_profile, name='update-profile'),
     # home
     path('', views.home, name='home'),
     # crud room
