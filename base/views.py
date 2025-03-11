@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
-from base.forms import RoomForm
+from base.forms import RoomForm, UserForm
 
 from .models import Message, Room, Topic
 
@@ -203,3 +203,18 @@ def delete_message(request: HttpRequest, pk: str):
     context = {'obj': message}
 
     return render(request, 'base/delete.html', context)
+
+
+@login_required(login_url='login')
+def update_profile(request: HttpRequest):
+    user = request.user
+    form = UserForm(instance=user)
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user-profile', pk=user.id)
+
+    context = {'form': form}
+    return render(request, 'base/update-user.html', context)
