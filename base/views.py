@@ -226,3 +226,10 @@ def topics_page(request: HttpRequest):
 
     context = {'topics': topics}
     return render(request, 'base/topics.html', context)
+
+
+def activity_page(request: HttpRequest):
+    topic_messages = Message.objects.all()[0:3]
+
+    context = {'topic_messages': topic_messages}
+    return render(request, 'base/activity.html', context)
