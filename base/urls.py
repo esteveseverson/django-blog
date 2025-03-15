@@ -13,6 +13,7 @@ urlpatterns = [
     # home
     path('', views.home, name='home'),
     path('topics/', views.topics_page, name='topics'),
+    path('activity/', views.activity_page, name='activity'),
     # crud room
     path('room/<str:pk>/', views.room, name='room'),
     path('create-room/', views.create_room, name='create-room'),
