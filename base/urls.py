@@ -12,6 +12,7 @@ urlpatterns = [
     path('update-profile/', views.update_profile, name='update-profile'),
     # home
     path('', views.home, name='home'),
+    path('topics/', views.topics_page, name='topics'),
     # crud room
     path('room/<str:pk>/', views.room, name='room'),
     path('create-room/', views.create_room, name='create-room'),

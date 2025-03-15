@@ -92,7 +92,7 @@ def home(request: HttpRequest):
     rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q))
     rooms_count = rooms.count()
 
-    topics = Topic.objects.all()
+    topics = Topic.objects.all()[0:5]
     topic_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
 
     context = {
@@ -218,3 +218,11 @@ def update_profile(request: HttpRequest):
 
     context = {'form': form}
     return render(request, 'base/update-user.html', context)
+
+
+def topics_page(request: HttpRequest):
+    q = request.GET.get('q') if request.GET.get('q') is not None else ''
+    topics = Topic.objects.filter(name__icontains=q)
+
+    context = {'topics': topics}
+    return render(request, 'base/topics.html', context)
